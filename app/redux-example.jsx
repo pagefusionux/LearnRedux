@@ -16,7 +16,7 @@ const stateDefault = {
 
 let nextHobbyId = 1;
 let nextMovieId = 1;
-const reducer = (state = stateDefault, action) => {
+const oldReducer = (state = stateDefault, action) => {
 
   /*
    *  'reducer' is a pure function which returns a new object created from
@@ -70,6 +70,59 @@ const reducer = (state = stateDefault, action) => {
       return state;
   }
 };
+
+// separate reducers
+const nameReducer = (state = 'Anonymous', action) => { // we don't worry about state being an object anymore
+  switch(action.type) {
+    case 'CHANGE_NAME':
+      return action.name;
+
+    default:
+      return state;
+  }
+};
+
+const hobbiesReducer = (state = [], action) => {
+  switch(action.type) {
+    case 'ADD_HOBBY':
+      return [
+          ...state, // not state.hobbies, just state (because we're passing in state to begin with)
+          {
+            id: nextHobbyId++,
+            hobby: action.hobby
+          }
+        ];
+    case 'REMOVE_HOBBY':
+      return state.filter((hobby) => hobby.id !== action.id)
+    default:
+      return state;
+  }
+};
+
+const moviesReducer = (state = [], action) => {
+  switch(action.type) {
+    case 'ADD_MOVIE':
+      return [
+        ...state,
+        {
+          id: nextMovieId++,
+          title: action.title,
+          genre: action.genre
+        }
+      ];
+    case 'REMOVE_MOVIE':
+      return state.filter((movie) => movie.id !== action.id)
+    default:
+      return state;
+  }
+};
+
+// combine reducers
+const reducer = redux.combineReducers({
+  name: nameReducer, // 'name' state managed by 'nameReducer'
+  hobbies: hobbiesReducer,
+  movies: moviesReducer
+});
 
 // create store
 const store = redux.createStore(reducer, redux.compose(
