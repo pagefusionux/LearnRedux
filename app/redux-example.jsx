@@ -8,70 +8,14 @@ console.log('Starting redux example');
  * - To set the default for the application state.
  * - To return the updated state given an action.
  * */
-const stateDefault = {
-  name: 'Anonymous',
-  hobbies: [], // an array of hobby objects
-  movies: [],
-};
 
-let nextHobbyId = 1;
-let nextMovieId = 1;
-const oldReducer = (state = stateDefault, action) => {
 
-  /*
-   *  'reducer' is a pure function which returns a new object created from
-   *  the passed-in state and new values for any changed properties (according to action.type)
-   * */
 
-  switch(action.type) {
-    case 'CHANGE_NAME':
-      return {
-        ...state,
-        name: action.name
-      };
-    case 'ADD_HOBBY':
-      return {
-        ...state,
-        hobbies: [
-          ...state.hobbies,
-          {
-            id: nextHobbyId++,
-            hobby: action.hobby
-          }
-        ]
-      };
-    case 'REMOVE_HOBBY':
-      return {
-        ...state,
-        hobbies: state.hobbies.filter((hobby) => {
-          // return true: keep in array
-          // return false: remove from array
-          return hobby.id !== action.id
-        })
-      };
-    case 'ADD_MOVIE':
-      return {
-        ...state,
-        movies: [
-          ...state.movies,
-          {
-            id: nextMovieId++,
-            title: action.title,
-            genre: action.genre,
-          }
-        ]
-      };
-    case 'REMOVE_MOVIE':
-      return {
-        ...state,
-        movies: state.movies.filter((movie) => movie.id !== action.id)
-      };
-    default:
-      return state;
-  }
-};
 
 // separate reducers
+
+// name Reducer and action generators
+// -------------------
 const nameReducer = (state = 'Anonymous', action) => { // we don't worry about state being an object anymore
   switch(action.type) {
     case 'CHANGE_NAME':
@@ -81,7 +25,21 @@ const nameReducer = (state = 'Anonymous', action) => { // we don't worry about s
       return state;
   }
 };
+ /*
+ * An action generator is a simple function that takes the items required to create an object
+ * (in this case, 'name'), and returns the object with the 'type' set on it.
+ *
+ * */
+const changeName = (name) => {
+  return {
+    type: 'CHANGE_NAME',
+    name // shorthand for name: name
+  }
+};
 
+// hobbies Reducer and action generators
+// -------------------
+let nextHobbyId = 1;
 const hobbiesReducer = (state = [], action) => {
   switch(action.type) {
     case 'ADD_HOBBY':
@@ -99,6 +57,23 @@ const hobbiesReducer = (state = [], action) => {
   }
 };
 
+const addHobby = (hobby) => {
+  return {
+    type: 'ADD_HOBBY',
+    hobby
+  }
+};
+
+const removeHobby = (id) => {
+  return {
+    type: 'REMOVE_HOBBY',
+    id
+  }
+};
+
+// movies Reducer and action generators
+// -------------------
+let nextMovieId = 1;
 const moviesReducer = (state = [], action) => {
   switch(action.type) {
     case 'ADD_MOVIE':
@@ -114,6 +89,21 @@ const moviesReducer = (state = [], action) => {
       return state.filter((movie) => movie.id !== action.id)
     default:
       return state;
+  }
+};
+
+const addMovie = (title, genre) => {
+  return {
+    type: 'ADD_MOVIE',
+    title,
+    genre
+  }
+};
+
+const removeMovie = (id) => {
+  return {
+    type: 'REMOVE_MOVIE',
+    id
   }
 };
 
@@ -139,49 +129,20 @@ const unsubscribe = store.subscribe(() => {
 });
 // unsubscribe();
 
+// output initial state
+console.log('initial state:', store.getState());
 
-// output current state
-console.log('currentState:', store.getState());
+// dispatch actions to store
+store.dispatch(changeName('Chris'));
 
-// dispatch action to store
-store.dispatch({
-  type: 'CHANGE_NAME',
-  name: 'Chris'
-});
+store.dispatch(addHobby('Running'));
+store.dispatch(addHobby('Walking'));
 
-store.dispatch({
-  type: 'ADD_HOBBY',
-  hobby: 'Running'
-});
+store.dispatch(removeHobby(2));
 
-store.dispatch({
-  type: 'ADD_HOBBY',
-  hobby: 'Walking'
-});
+store.dispatch(changeName('Emily'));
 
-store.dispatch({
-  type: 'REMOVE_HOBBY',
-  id: 2
-});
+store.dispatch(addMovie('The Big Short','Documentary'));
+store.dispatch(addMovie('Star Wars', 'Action'));
 
-store.dispatch({
-  type: 'CHANGE_NAME',
-  name: 'Christopher'
-});
-
-store.dispatch({
-  type: 'ADD_MOVIE',
-  title: 'The Big Short',
-  genre: 'Documentary'
-});
-
-store.dispatch({
-  type: 'ADD_MOVIE',
-  title: 'Big Trouble in Little China',
-  genre: 'Action'
-});
-
-store.dispatch({
-  type: 'REMOVE_MOVIE',
-  id: 1
-});
+store.dispatch(removeMovie(1));
