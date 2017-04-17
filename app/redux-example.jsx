@@ -8,7 +8,15 @@ console.log('Starting redux example');
  * - To set the default for the application state.
  * - To return the updated state given an action.
  * */
-const reducer = (state = {name: 'Anonymous'}, action) => {
+const stateDefault = {
+  name: 'Anonymous',
+  hobbies: [], // an array of hobby objects
+  movies: [],
+};
+
+let nextHobbyId = 1;
+let nextMovieId = 1;
+const reducer = (state = stateDefault, action) => {
 
   /*
    *  'reducer' is a pure function which returns a new object created from
@@ -21,7 +29,43 @@ const reducer = (state = {name: 'Anonymous'}, action) => {
         ...state,
         name: action.name
       };
-
+    case 'ADD_HOBBY':
+      return {
+        ...state,
+        hobbies: [
+          ...state.hobbies,
+          {
+            id: nextHobbyId++,
+            hobby: action.hobby
+          }
+        ]
+      };
+    case 'REMOVE_HOBBY':
+      return {
+        ...state,
+        hobbies: state.hobbies.filter((hobby) => {
+          // return true: keep in array
+          // return false: remove from array
+          return hobby.id !== action.id
+        })
+      };
+    case 'ADD_MOVIE':
+      return {
+        ...state,
+        movies: [
+          ...state.movies,
+          {
+            id: nextMovieId++,
+            title: action.title,
+            genre: action.genre,
+          }
+        ]
+      };
+    case 'REMOVE_MOVIE':
+      return {
+        ...state,
+        movies: state.movies.filter((movie) => movie.id !== action.id)
+      };
     default:
       return state;
   }
@@ -36,8 +80,9 @@ const store = redux.createStore(reducer, redux.compose(
 // subscribe to changes
 const unsubscribe = store.subscribe(() => {
   const state = store.getState();
-  console.log('name is:', state.name);
   document.getElementById('app').innerHTML = state.name;
+
+  console.log('New state:', state);
 });
 // unsubscribe();
 
@@ -52,6 +97,38 @@ store.dispatch({
 });
 
 store.dispatch({
+  type: 'ADD_HOBBY',
+  hobby: 'Running'
+});
+
+store.dispatch({
+  type: 'ADD_HOBBY',
+  hobby: 'Walking'
+});
+
+store.dispatch({
+  type: 'REMOVE_HOBBY',
+  id: 2
+});
+
+store.dispatch({
   type: 'CHANGE_NAME',
-  name: 'Brad'
+  name: 'Christopher'
+});
+
+store.dispatch({
+  type: 'ADD_MOVIE',
+  title: 'The Big Short',
+  genre: 'Documentary'
+});
+
+store.dispatch({
+  type: 'ADD_MOVIE',
+  title: 'Big Trouble in Little China',
+  genre: 'Action'
+});
+
+store.dispatch({
+  type: 'REMOVE_MOVIE',
+  id: 1
 });
