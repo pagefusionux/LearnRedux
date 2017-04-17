@@ -20,6 +20,7 @@ $(document).foundation();
 require('style!css!sass!applicationStyles');
 
 // router implementation
+/*
 ReactDOM.render(
   <Router history={hashHistory}>
     <Route path="/" component={Main}>
@@ -30,6 +31,7 @@ ReactDOM.render(
   </Router>,
   document.getElementById('app')
 );
+*/
 
 //require('./redux-example.jsx');
 require('./redux-todo-example.jsx');
