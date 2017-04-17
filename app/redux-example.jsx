@@ -9,14 +9,35 @@ console.log('Starting redux example');
  * - To return the updated state given an action.
  * */
 const reducer = (state = {name: 'Anonymous'}, action) => {
-  // no state? what's a good default?
-  //state = state || { name: 'Anonymous' }; // ES 5 example
 
-  return state;
+  /*
+   *  'reducer' is a pure function which returns a new object created from
+   *  the passed-in state and new values for any changed properties (according to action.type)
+   * */
+
+  switch(action.type) {
+    case 'CHANGE_NAME':
+      return {
+        ...state,
+        name: action.name
+      };
+
+    default:
+      return state;
+  }
 };
 
+// create store
 const store = redux.createStore(reducer);
 
-const currentState = store.getState();
+// output current state
+console.log('currentState:', store.getState());
 
-console.log('currentState:', currentState);
+// dispatch action to store
+store.dispatch({
+  type: 'CHANGE_NAME',
+  name: 'Chris'
+});
+
+// see the change
+console.log('Name should now be Chris:', store.getState());
