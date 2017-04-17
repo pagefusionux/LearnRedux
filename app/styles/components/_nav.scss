@@ -1,0 +1,23 @@
+/* Styles for Nav.jsx */
+
+.top-bar {
+  background-color: $nav-background;
+
+  .menu-text {
+    color: $white;
+    white-space: nowrap;
+  }
+
+  .menu > .menu-text > a {
+    display: inline;
+    padding: 0;
+  }
+
+  ul {
+    background-color: inherit;
+  }
+
+  .active-link {
+    font-weight: bold;
+  }
+}

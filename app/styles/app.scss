@@ -1,0 +1,11 @@
+// base variables (colors, fonts, etc.)
+@import "base/variables";
+
+// Foundation settings
+@import "base/foundation-settings";
+@import "foundation";
+@include foundation-everything;
+
+// JSX components
+@import "components/nav";
+@import "components/page";
