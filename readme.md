@@ -1,4 +1,4 @@
-# ReactBoilerplate3
+# LearnRedux
 
 PHPStorm Setup:
 - Duplicate directory structure from 'ReactBoilerplate3' to [projectname]
