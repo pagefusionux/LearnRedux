@@ -1,4 +1,5 @@
 const redux = require('redux');
+const axios = require('axios');
 
 console.log('Starting redux example');
 
@@ -8,9 +9,6 @@ console.log('Starting redux example');
  * - To set the default for the application state.
  * - To return the updated state given an action.
  * */
-
-
-
 
 // separate reducers
 
@@ -107,11 +105,61 @@ const removeMovie = (id) => {
   }
 };
 
+// Map Reducer and action generators
+// -------------------
+const mapReducer = (state = {isFetching: false, url: undefined}, action) => {
+  switch(action.type) {
+    case 'START_LOCATION_FETCH':
+      return {
+        isFetching: true,
+        url: undefined
+      };
+    case 'COMPLETE_LOCATION_FETCH':
+      return {
+        isFetching: false,
+        url: action.url
+      };
+    default:
+      return state;
+
+  }
+};
+
+const startLocationFetch = () => {
+  return {
+    type: 'START_LOCATION_FETCH'
+  }
+};
+
+const completeLocationFetch = (url) => {
+  return {
+    type: 'COMPLETE_LOCATION_FETCH',
+    url
+  }
+};
+
+/*
+* This shows how you can use action generators to do asynchronous calls
+*
+* */
+const fetchLocation = () => {
+  store.dispatch(startLocationFetch()); // show isLoading icon (for example)
+
+  // asynchronous call
+  axios.get('http://ipinfo.io').then(function(res) {
+    const loc = res.data.loc;
+    const baseUrl = 'https://maps.google.com?q=';
+
+    store.dispatch(completeLocationFetch(baseUrl + loc)); // remove isLoading icon
+  });
+};
+
 // combine reducers
 const reducer = redux.combineReducers({
   name: nameReducer, // 'name' state managed by 'nameReducer'
   hobbies: hobbiesReducer,
-  movies: moviesReducer
+  movies: moviesReducer,
+  map: mapReducer
 });
 
 // create store
@@ -123,14 +171,22 @@ const store = redux.createStore(reducer, redux.compose(
 // subscribe to changes
 const unsubscribe = store.subscribe(() => {
   const state = store.getState();
-  document.getElementById('app').innerHTML = state.name;
+  //document.getElementById('app').innerHTML = state.name;
 
   console.log('New state:', state);
+
+  if (state.map.isFetching) {
+    document.getElementById('app').innerHTML = 'Loading...';
+  } else if (state.map.url) {
+    document.getElementById('app').innerHTML = '<a href="'+ state.map.url +'" target="_blank">View Your Location</a>';
+  }
 });
 // unsubscribe();
 
 // output initial state
 console.log('initial state:', store.getState());
+
+fetchLocation();
 
 // dispatch actions to store
 store.dispatch(changeName('Chris'));
