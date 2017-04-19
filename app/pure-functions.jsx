@@ -1,7 +1,4 @@
-const redux = require('redux');
-
-console.log('Starting redux example');
-
+console.log('All about pure functions. (See Code) ');
 
 /*
  * Pure functions:

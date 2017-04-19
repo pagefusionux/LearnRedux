@@ -18,10 +18,7 @@
     - configureStore.jsx
   
 - This project utilizes http://ipinfo.io
-  - Takes your IP and returns your location on a map.
-    - 
-  
-- 
+  - Takes your IP and returns your location on a map. 
 
 ---
 Udemy Tutorial:

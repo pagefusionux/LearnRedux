@@ -2,10 +2,11 @@ const redux = require('redux');
 
 console.log('Starting redux example');
 
+// define actions
 const actions = require('./actions/index');
+
+// define store
 const store = require('./store/configureStore').configure();
-
-
 
 // subscribe to changes
 const unsubscribe = store.subscribe(() => {
@@ -25,9 +26,9 @@ const unsubscribe = store.subscribe(() => {
 // output initial state
 console.log('initial state:', store.getState());
 
-store.dispatch(actions.fetchLocation()); // utilize redux-thunk
-
 // dispatch actions to store
+store.dispatch(actions.fetchLocation()); // utilize redux-thunk (for doing asynchronous stuff)
+
 store.dispatch(actions.changeName('Chris'));
 
 store.dispatch(actions.addHobby('Running'));
